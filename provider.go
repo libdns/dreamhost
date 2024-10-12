@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/adamantal/go-dreamhost/api"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/libdns/libdns"
 )
 
@@ -32,10 +33,13 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 		return nil, err
 	}
 
+	spew.Dump(apiRecords)
 	// translate each Dreamhost Domain Record to a libdns Record
 	for _, rec := range apiRecords {
 		records = append(records, recordFromApiDnsRecord(rec))
 	}
+
+	spew.Dump(records)
 
 	return records, nil
 }
