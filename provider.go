@@ -2,6 +2,7 @@ package dreamhost
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/adamantal/go-dreamhost/api"
@@ -28,18 +29,28 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 
 	var records []libdns.Record
 
+	fmt.Printf("GetRecords called with zone %s\n", zone)
+
 	apiRecords, err := p.client.ListDNSRecords(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	spew.Dump(apiRecords)
-	// translate each Dreamhost Domain Record to a libdns Record
-	for _, rec := range apiRecords {
-		records = append(records, recordFromApiDnsRecord(rec))
+	_, err = spew.Printf("raw apiRecords: %#+v\n", apiRecords)
+	if err != nil {
 	}
 
-	spew.Dump(records)
+	// translate each Dreamhost Domain Record to a libdns Record
+	for _, rec := range apiRecords {
+		if rec.Zone == zone {
+			records = append(records, recordFromApiDnsRecord(rec))
+		}
+
+	}
+
+	_, err = spew.Printf("converted records: %#+v\n", records)
+	if err != nil {
+	}
 
 	return records, nil
 }
