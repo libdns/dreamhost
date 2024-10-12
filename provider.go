@@ -20,6 +20,7 @@ type Provider struct {
 
 // GetRecords lists all the records in the zone.
 func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record, error) {
+	fmt.Printf("GetRecords called with zone %s\n", zone)
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	err := p.init()
@@ -28,8 +29,6 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 	}
 
 	var records []libdns.Record
-
-	fmt.Printf("GetRecords called with zone %s\n", zone)
 
 	apiRecords, err := p.client.ListDNSRecords(ctx)
 	if err != nil {
