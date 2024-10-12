@@ -56,6 +56,7 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 
 func (p *Provider) addDNSRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	var createdRecords []libdns.Record
+	fmt.Printf("addDNSRecords called with zone %s\n", zone)
 
 	for _, record := range records {
 		apiInputRecord := apiDnsRecordInputFromRecord(record, zone)
@@ -70,6 +71,7 @@ func (p *Provider) addDNSRecords(ctx context.Context, zone string, records []lib
 
 func (p *Provider) removeDNSRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	var deletedRecords []libdns.Record
+	fmt.Printf("removeDNSRecords called with zone %s\n", zone)
 
 	for _, record := range records {
 		apiInputRecord := apiDnsRecordInputFromRecord(record, zone)
