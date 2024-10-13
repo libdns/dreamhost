@@ -1,6 +1,8 @@
 package dreamhost
 
 import (
+	"strings"
+
 	"github.com/adamantal/go-dreamhost/api"
 	"github.com/libdns/libdns"
 )
@@ -27,7 +29,8 @@ func apiDnsRecordInputFromRecord(record libdns.Record, zone string) api.DNSRecor
 	var recordInput api.DNSRecordInput
 	recordInput.Type = api.RecordType(record.Type)
 	recordInput.Value = record.Value
-	// Dreamhost expects the record name to be absolute
+	// Dreamhost expects the record name to be absolute, without a dot at the end
+	zone = strings.TrimRight(zone, ".")
 	recordInput.Record = libdns.AbsoluteName(record.Name, zone)
 	return recordInput
 }

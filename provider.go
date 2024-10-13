@@ -2,12 +2,9 @@ package dreamhost
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"sync"
 
 	"github.com/adamantal/go-dreamhost/api"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/libdns/libdns"
 )
 
@@ -21,7 +18,6 @@ type Provider struct {
 
 // GetRecords lists all the records in the zone.
 func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record, error) {
-	fmt.Printf("GetRecords called with zone %s\n", zone)
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	err := p.init()
@@ -36,12 +32,6 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 		return nil, err
 	}
 
-	_, err = spew.Printf("raw apiRecords: %#+v\n", apiRecords)
-	if err != nil {
-	}
-
-	zone = strings.TrimRight(zone, ".")
-
 	// translate each Dreamhost Domain Record to a libdns Record
 	for _, rec := range apiRecords {
 		if rec.Zone == zone {
@@ -50,17 +40,11 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 
 	}
 
-	_, err = spew.Printf("converted records: %#+v\n", records)
-	if err != nil {
-	}
-
 	return records, nil
 }
 
 func (p *Provider) addDNSRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	var createdRecords []libdns.Record
-	zone = strings.TrimRight(zone, ".")
-	fmt.Printf("addDNSRecords called with zone %s\n", zone)
 
 	for _, record := range records {
 		apiInputRecord := apiDnsRecordInputFromRecord(record, zone)
@@ -75,8 +59,6 @@ func (p *Provider) addDNSRecords(ctx context.Context, zone string, records []lib
 
 func (p *Provider) removeDNSRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	var deletedRecords []libdns.Record
-	zone = strings.TrimRight(zone, ".")
-	fmt.Printf("removeDNSRecords called with zone %s\n", zone)
 
 	for _, record := range records {
 		apiInputRecord := apiDnsRecordInputFromRecord(record, zone)
