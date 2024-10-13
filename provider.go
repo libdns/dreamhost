@@ -34,7 +34,10 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 
 	// translate each Dreamhost Domain Record to a libdns Record
 	for _, rec := range apiRecords {
-		records = append(records, recordFromApiDnsRecord(rec))
+		if rec.Zone == zone {
+			records = append(records, recordFromApiDnsRecord(rec))
+		}
+
 	}
 
 	return records, nil
