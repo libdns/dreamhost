@@ -3,6 +3,7 @@ package dreamhost
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/adamantal/go-dreamhost/api"
@@ -39,6 +40,8 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 	if err != nil {
 	}
 
+	zone = strings.TrimRight(zone, ".")
+
 	// translate each Dreamhost Domain Record to a libdns Record
 	for _, rec := range apiRecords {
 		if rec.Zone == zone {
@@ -56,6 +59,7 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 
 func (p *Provider) addDNSRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	var createdRecords []libdns.Record
+	zone = strings.TrimRight(zone, ".")
 	fmt.Printf("addDNSRecords called with zone %s\n", zone)
 
 	for _, record := range records {
@@ -71,6 +75,7 @@ func (p *Provider) addDNSRecords(ctx context.Context, zone string, records []lib
 
 func (p *Provider) removeDNSRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	var deletedRecords []libdns.Record
+	zone = strings.TrimRight(zone, ".")
 	fmt.Printf("removeDNSRecords called with zone %s\n", zone)
 
 	for _, record := range records {
